@@ -28,6 +28,13 @@ return new class extends Migration
             $table->integer('value');
             $table->timestamp('created_at');
         });
+
+        Schema::create('devices', function (Blueprint $table) {
+            $table->id();
+            $table->string('device_name');
+            $table->string('share_code');
+            $table->timestamps();
+        });
     }
 
     /**
@@ -37,5 +44,6 @@ return new class extends Migration
     {
         Schema::dropIfExists('settings');
         Schema::dropIfExists('operation_history');
+        Schema::dropIfExists('devices');
     }
 };

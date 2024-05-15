@@ -15,6 +15,14 @@
     <form method="POST" action="{{ route('pishock') }}">
         @csrf
         <div class="mb-3">
+            <label>Devices: </label>
+            <select class="form-select" id="devices" name="devices[]" multiple required>
+                @foreach ($devices as $deviceId => $deviceName)
+                    <option value="{{ $deviceId }}">{{ $deviceName }}</option>
+                @endforeach
+            </select>
+        </div>
+        <div class="mb-3">
             <label for="operation" class="form-label">Operation</label>
             <select class="form-select" id="operation" name="operation" required>
                 <option value="">Select Operation</option>
@@ -39,7 +47,7 @@
     const operationSelect = document.getElementById('operation');
     const intensityGroup = document.getElementById('intensity-group');
 
-    operationSelect.addEventListener('change', function() {
+    operationSelect.addEventListener('change', function () {
         if (this.value === 'shock' || this.value === 'vibrate') {
             intensityGroup.style.display = 'block';
         } else {
