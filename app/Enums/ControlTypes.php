@@ -16,8 +16,8 @@ class ControlTypes
      * @var array|string[]
      */
     public static array $types = [
-      self::SHOCK,
-      self::VIBRATE,
-      self::BEEP,
+        self::SHOCK,
+        self::VIBRATE,
+        self::BEEP,
     ];
 }

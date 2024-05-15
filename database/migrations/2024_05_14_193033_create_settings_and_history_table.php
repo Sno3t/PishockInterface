@@ -36,6 +36,6 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('settings');
-        Schema::dropIfExists('history');
+        Schema::dropIfExists('operation_history');
     }
 };
