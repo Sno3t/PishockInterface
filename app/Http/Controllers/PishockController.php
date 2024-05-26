@@ -7,6 +7,7 @@ namespace App\Http\Controllers;
 use App\Enums\Operations;
 use App\Http\Requests\OperationRequest;
 use App\Models\Device;
+use App\Models\Settings;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Contracts\View\View;
@@ -27,12 +28,18 @@ class PishockController extends Controller
         $this->username = config('pishock.username');
         $this->apiKey = config('pishock.apikey');
         $this->devices = Device::all()->pluck('device_name', 'share_code')->toArray();
-//        $this->devices = Device::all()->toArray();
     }
 
     public function index(): View
     {
-        return view('pishock', ['devices' => $this->devices]);
+        $settings = Settings::all();
+        $maxValues = [];
+
+        foreach ($settings as $setting) {
+            $maxValues[$setting->operation][$setting->type] = $setting->max_value;
+        }
+
+        return view('pishock', ['devices' => $this->devices, 'maxValues' => $maxValues]);
     }
 
     /**

@@ -15,22 +15,24 @@ return new class extends Migration
     {
         Schema::create('settings', function (Blueprint $table) {
             $table->id()->primary();
-            $table->foreignIdFor(User::class);
-            $table->enum('type', ControlTypes::$types);
+            $table->enum('operation', ControlTypes::$types);
+            $table->enum('type', ['duration', 'intensity']);
             $table->integer('max_value');
-            $table->timestamps();
+            $table->timestamp('created_at');
+            // todo Add updated by user id later
         });
 
         Schema::create('operation_history', function (Blueprint $table) {
             $table->id()->primary();
-            $table->foreignIdFor(User::class)->nullable();
-            $table->enum('type', ControlTypes::$types);
+            $table->enum('operation', ControlTypes::$types);
+            $table->enum('type', ['duration', 'intensity']);
             $table->integer('value');
             $table->timestamp('created_at');
+//            $table->foreignIdFor(User::class)->nullable();  // todo Add updated by user id later
         });
 
         Schema::create('devices', function (Blueprint $table) {
-            $table->id();
+            $table->id()->primary();
             $table->string('device_name');
             $table->string('share_code');
             $table->timestamps();

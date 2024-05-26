@@ -15,7 +15,7 @@ class DeviceController extends Controller
         return view('devices.index', ['devices' => $devices]);
     }
 
-    public function create()
+    public function create(): View
     {
         return view('devices.create');
     }
@@ -23,8 +23,8 @@ class DeviceController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $request->validate([
-            'device_name' => 'required',
-            'share_code' => 'required',
+            'device_name' => 'required|int|min:0',
+            'share_code' => 'required|int|min:0',
         ]);
 
         Device::create($request->all());
@@ -37,11 +37,11 @@ class DeviceController extends Controller
         return view('devices.edit', compact('device'));
     }
 
-    public function update(Request $request, Device $device)
+    public function update(Request $request, Device $device): RedirectResponse
     {
         $request->validate([
-            'device_name' => 'required',
-            'share_code' => 'required',
+            'device_name' => 'required|int|min:0',
+            'share_code' => 'required|int|min:0',
         ]);
 
         $device->update($request->all());
@@ -49,7 +49,7 @@ class DeviceController extends Controller
         return redirect()->route('devices.index')->with('status', 'Device updated successfully');
     }
 
-    public function destroy(Device $device)
+    public function destroy(Device $device): RedirectResponse
     {
         $device->delete();
 
