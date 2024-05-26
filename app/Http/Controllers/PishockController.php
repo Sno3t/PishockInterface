@@ -10,7 +10,6 @@ use App\Models\Device;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Contracts\View\View;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Log;
@@ -20,15 +19,15 @@ class PishockController extends Controller
     protected string $baseUrl = 'https://do.pishock.com/api/apioperate';
     protected string $username;
     protected string $apiKey;
-    protected string $name;
+    protected string $name= 'Pishock interface';
     private array $devices;
 
     public function __construct()
     {
         $this->username = config('pishock.username');
         $this->apiKey = config('pishock.apikey');
-        $this->name = 'Pishock interface';
         $this->devices = Device::all()->pluck('device_name', 'share_code')->toArray();
+//        $this->devices = Device::all()->toArray();
     }
 
     public function index(): View
@@ -45,11 +44,12 @@ class PishockController extends Controller
         $operation = $request->input('operation');
         $duration = $request->input('duration');
         $intensity = $request->input('intensity');
+        $devices = $request->input('devices');
 
         $response = match ($operation) {
-            'shock' => $this->sendRequest(Operations::SHOCK, $duration, $intensity),
-            'vibrate' => $this->sendRequest(Operations::VIBRATE, $duration, $intensity),
-            'beep' => $this->sendRequest(Operations::BEEP, $duration),
+            'shock' => $this->sendRequest(Operations::SHOCK, $duration, $devices, $intensity),
+            'vibrate' => $this->sendRequest(Operations::VIBRATE, $duration, $devices, $intensity),
+            'beep' => $this->sendRequest(Operations::BEEP, $duration, $devices),
             default => 'Invalid operation',
         };
 
@@ -69,11 +69,11 @@ class PishockController extends Controller
 
             $operations = [];
 
-            foreach ($deviceShareCodes as $device){
+            foreach ($deviceShareCodes as $deviceCode){
                 $params = [
                     'Username' => $this->username,
                     'Name' => $this->name,
-                    'Code' => $this->shareCode,
+                    'Code' => $deviceCode,
                     'Apikey' => $this->apiKey,
                     'Op' => $operation,
                     'Duration' => $duration,
@@ -104,6 +104,11 @@ class PishockController extends Controller
             Log::error($e);
         }
         return null;
+    }
+
+    public function deviceManager(){
+
+        return view('deviceManager', ['devices' => Device::all()]);
     }
 
 }

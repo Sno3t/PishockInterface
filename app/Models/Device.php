@@ -3,7 +3,6 @@
 
 namespace App\Models;
 
-
 use Illuminate\Database\Eloquent\Model;
 
 class Device extends Model
@@ -13,9 +12,8 @@ class Device extends Model
      * @var string[]
      */
     protected $fillable = [
-        'name',
-        'username',
-        'shareCode',
+        'device_name',
+        'share_code',
     ];
 
 
@@ -106,7 +104,6 @@ class Device extends Model
     {
         $this->shareCode = $shareCode;
     }
-
 
 
 }

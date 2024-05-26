@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DeviceController;
 use App\Http\Controllers\PishockController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
@@ -19,5 +20,7 @@ Route::middleware('auth')->group(function () {
 Route::get('/', [PishockController::class, 'index']);
 Route::get('/pishock', [PishockController::class, 'index'])->name('pishock');
 Route::post('/pishock', [PishockController::class, 'sendCommand']);
+
+Route::resource('devices', DeviceController::class);
 
 require __DIR__.'/auth.php';

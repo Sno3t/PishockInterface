@@ -15,12 +15,11 @@
     <form method="POST" action="{{ route('pishock') }}">
         @csrf
         <div class="mb-3">
-            <label>Devices: </label>
-            <select class="form-select" id="devices" name="devices[]" multiple required>
-                @foreach ($devices as $deviceId => $deviceName)
-                    <option value="{{ $deviceId }}">{{ $deviceName }}</option>
-                @endforeach
-            </select>
+            <a href="{{ route('devices.index') }}">Devices:</a> <br>
+{{--            {{dd($devices)}}--}}
+            @foreach ($devices as $deviceCode => $deviceName)
+                <input type="checkbox" value="{{ $deviceCode }}">{{ $deviceName }} <br>
+            @endforeach
         </div>
         <div class="mb-3">
             <label for="operation" class="form-label">Operation</label>
