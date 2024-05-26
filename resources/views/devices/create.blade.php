@@ -1,7 +1,7 @@
 {{--@extends('layouts.app')--}}
 {{--@section('content')--}}
     <div class="container">
-        <h1>Add New Device</h1>
+        <h1>Add new shocker</h1>
 
         @if ($errors->any())
             <div class="alert alert-danger">

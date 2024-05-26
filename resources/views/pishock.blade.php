@@ -15,10 +15,11 @@
     <form method="POST" action="{{ route('pishock') }}">
         @csrf
         <div class="mb-3">
-            <a href="{{ route('devices.index') }}">Devices:</a> <br>
-{{--            {{dd($devices)}}--}}
+            <a href="{{ route('devices.index') }}">Device management</a> <br>
+            <label for="deviceShareCodes"> Devices:</label><br>
             @foreach ($devices as $deviceCode => $deviceName)
-                <input type="checkbox" value="{{ $deviceCode }}">{{ $deviceName }} <br>
+                <input type="checkbox" name="deviceShareCodes[]" id="device_{{ $deviceCode }}" value="{{ $deviceCode }}">
+                <label for="device_{{ $deviceCode }}">{{ $deviceName }}</label> <br>
             @endforeach
         </div>
         <div class="mb-3">

@@ -3,11 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\Device;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
 class DeviceController extends Controller
 {
-    public function index()
+    public function index(): View
     {
         $devices = Device::paginate(10);
         return view('devices.index', ['devices' => $devices]);
@@ -18,14 +20,12 @@ class DeviceController extends Controller
         return view('devices.create');
     }
 
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
         $request->validate([
             'device_name' => 'required',
             'share_code' => 'required',
         ]);
-
-//        dd($request->all());
 
         Device::create($request->all());
 
@@ -46,13 +46,13 @@ class DeviceController extends Controller
 
         $device->update($request->all());
 
-        return redirect()->route('devices.index')->with('status', 'Device updated successfully!');
+        return redirect()->route('devices.index')->with('status', 'Device updated successfully');
     }
 
     public function destroy(Device $device)
     {
         $device->delete();
 
-        return redirect()->route('devices.index')->with('status', 'Device deleted successfully!');
+        return redirect()->route('devices.index')->with('status', 'Device deleted successfully');
     }
 }

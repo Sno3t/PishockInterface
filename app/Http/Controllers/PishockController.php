@@ -44,7 +44,7 @@ class PishockController extends Controller
         $operation = $request->input('operation');
         $duration = $request->input('duration');
         $intensity = $request->input('intensity');
-        $devices = $request->input('devices');
+        $devices = $request->input('deviceShareCodes');
 
         $response = match ($operation) {
             'shock' => $this->sendRequest(Operations::SHOCK, $duration, $devices, $intensity),
@@ -59,6 +59,7 @@ class PishockController extends Controller
     /**
      * @param string $operation
      * @param int $duration
+     * @param array $deviceShareCodes
      * @param int|null $intensity
      * @return string|null
      */
