@@ -7,11 +7,8 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
 
     <style>
-        .right-stripe-duration {
-            background: linear-gradient(to right, transparent calc(100% - 50%), grey 0%);
-        }
-        .right-stripe-intensity {
-            background: linear-gradient(to right, transparent calc(100% - 50%), grey 0%);
+        .right-stripe {
+            background: linear-gradient(to right, transparent calc(100% - var(--gray-percentage, 0%)), grey 0%);
         }
     </style>
 </head>
@@ -36,7 +33,6 @@
         <div class="mb-3">
             <label for="operation" class="form-label">Operation</label>
             <select class="form-select" id="operation" name="operation" required>
-                <option value="">Select Operation</option>
                 <option value="shock">Shock</option>
                 <option value="vibrate">Vibrate</option>
                 <option value="beep">Beep</option>
@@ -44,11 +40,11 @@
         </div>
         <div class="mb-3">
             <label for="duration" class="form-label">Duration (seconds): <span id="durationValue">1</span></label>
-            <input type="range" class="form-range right-stripe-duration" id="duration" name="duration" min="1" max="100" value="1">
+            <input type="range" class="form-range right-stripe" id="duration" name="duration" min="1" max="100" value="1">
         </div>
         <div class="mb-3" id="intensity-group">
             <label for="intensity" class="form-label">Intensity: <span id="intensityValue">1</span></label>
-            <input type="range" class="form-range right-stripe-intensity" id="intensity" name="intensity" min="1" max="100" value="1">
+            <input type="range" class="form-range right-stripe" id="intensity" name="intensity" min="1" max="100" value="1">
         </div>
         <button type="submit" class="btn btn-primary">Send Command</button>
     </form>
@@ -68,26 +64,21 @@
 
         const maxValues = @json($maxValues);
 
-        // Restore checkbox states
+        // Restore all the values from the previous submitted page
         checkboxes.forEach(checkbox => {
             if (localStorage.getItem(checkbox.id) === 'true') {
                 checkbox.checked = true;
             }
         });
-
-        // Restore select value
         if (localStorage.getItem('operation')) {
             operationSelect.value = localStorage.getItem('operation');
             toggleIntensityGroup();
             setSliderMaxValues();
         }
-
-        // Restore slider values and set displayed values
         if (localStorage.getItem('duration')) {
             durationInput.value = localStorage.getItem('duration');
             durationValue.textContent = durationInput.value;
         }
-
         if (localStorage.getItem('intensity')) {
             intensityInput.value = localStorage.getItem('intensity');
             intensityValue.textContent = intensityInput.value;
@@ -114,6 +105,7 @@
             intensityValue.textContent = intensityInput.value;
         });
 
+        // Check if at least one check box is checked and store values
         form.addEventListener('submit', (event) => {
             let isChecked = false;
             checkboxes.forEach(checkbox => {
@@ -137,6 +129,7 @@
             localStorage.setItem('intensity', intensityInput.value);
         });
 
+        //
         function toggleIntensityGroup() {
             if (operationSelect.value === 'shock' || operationSelect.value === 'vibrate') {
                 intensityGroup.style.display = 'block';
@@ -145,13 +138,13 @@
             }
         }
 
+        // Enforcing the max value on sliders
         function setSliderMaxValues() {
-            const operation = operationSelect.value;
             const maxDuration = getMaxDuration();
             const maxIntensity = getMaxIntensity();
 
-            durationInput.max = 100;
-            intensityInput.max = 100;
+            setSliderBackground(durationInput, maxDuration);
+            setSliderBackground(intensityInput, maxIntensity);
 
             if (parseInt(durationInput.value, 10) > maxDuration) {
                 durationInput.value = maxDuration;
@@ -164,14 +157,20 @@
             }
         }
 
+        // Dynamic slider background
+        function setSliderBackground(slider, maxValue) {
+            const percentage = 100 - (maxValue / 100 * 100);
+            slider.style.setProperty('--gray-percentage', `${percentage}%`);
+        }
+
         function getMaxDuration() {
             const operation = operationSelect.value;
-            return maxValues[operation]?.duration || 100;
+            return maxValues[operation]?.duration || 10;
         }
 
         function getMaxIntensity() {
             const operation = operationSelect.value;
-            return maxValues[operation]?.intensity || 100;
+            return maxValues[operation]?.intensity || 10;
         }
 
         setSliderMaxValues();

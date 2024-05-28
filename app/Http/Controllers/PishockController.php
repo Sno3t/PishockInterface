@@ -106,7 +106,6 @@ class PishockController extends Controller
                 ]);
             }
 
-
 //            return $response->getBody()->getContents();
         } catch (GuzzleException $e) {
             Log::error($e);

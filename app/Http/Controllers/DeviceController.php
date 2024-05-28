@@ -23,8 +23,8 @@ class DeviceController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $request->validate([
-            'device_name' => 'required|int|min:0',
-            'share_code' => 'required|int|min:0',
+            'device_name' => 'required|string|min:0',
+            'share_code' => 'required|string|min:0',
         ]);
 
         Device::create($request->all());
@@ -40,8 +40,8 @@ class DeviceController extends Controller
     public function update(Request $request, Device $device): RedirectResponse
     {
         $request->validate([
-            'device_name' => 'required|int|min:0',
-            'share_code' => 'required|int|min:0',
+            'device_name' => 'required|string|min:0',
+            'share_code' => 'required|string|min:0',
         ]);
 
         $device->update($request->all());
