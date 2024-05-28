@@ -14,7 +14,6 @@
             background: linear-gradient(to right, transparent calc(100% - 50%), grey 0%);
         }
     </style>
-
 </head>
 <body>
 <div class="container mt-5">
@@ -67,8 +66,7 @@
         const intensityValue = document.getElementById('intensityValue');
         const deviceError = document.getElementById('device-error');
 
-        const predefinedMaxDuration = 50;
-        const predefinedMaxIntensity = 75;
+        const maxValues = @json($maxValues);
 
         // Restore checkbox states
         checkboxes.forEach(checkbox => {
@@ -81,6 +79,7 @@
         if (localStorage.getItem('operation')) {
             operationSelect.value = localStorage.getItem('operation');
             toggleIntensityGroup();
+            setSliderMaxValues();
         }
 
         // Restore slider values and set displayed values
@@ -94,18 +93,23 @@
             intensityValue.textContent = intensityInput.value;
         }
 
-        operationSelect.addEventListener('change', toggleIntensityGroup);
+        operationSelect.addEventListener('change', () => {
+            toggleIntensityGroup();
+            setSliderMaxValues();
+        });
 
         durationInput.addEventListener('input', () => {
-            if (parseInt(durationInput.value, 10) > predefinedMaxDuration) {
-                durationInput.value = predefinedMaxDuration;
+            const maxDuration = getMaxDuration();
+            if (parseInt(durationInput.value, 10) > maxDuration) {
+                durationInput.value = maxDuration;
             }
             durationValue.textContent = durationInput.value;
         });
 
         intensityInput.addEventListener('input', () => {
-            if (parseInt(intensityInput.value, 10) > predefinedMaxIntensity) {
-                intensityInput.value = predefinedMaxIntensity;
+            const maxIntensity = getMaxIntensity();
+            if (parseInt(intensityInput.value, 10) > maxIntensity) {
+                intensityInput.value = maxIntensity;
             }
             intensityValue.textContent = intensityInput.value;
         });
@@ -140,6 +144,37 @@
                 intensityGroup.style.display = 'none';
             }
         }
+
+        function setSliderMaxValues() {
+            const operation = operationSelect.value;
+            const maxDuration = getMaxDuration();
+            const maxIntensity = getMaxIntensity();
+
+            durationInput.max = 100;
+            intensityInput.max = 100;
+
+            if (parseInt(durationInput.value, 10) > maxDuration) {
+                durationInput.value = maxDuration;
+                durationValue.textContent = maxDuration;
+            }
+
+            if (parseInt(intensityInput.value, 10) > maxIntensity) {
+                intensityInput.value = maxIntensity;
+                intensityValue.textContent = maxIntensity;
+            }
+        }
+
+        function getMaxDuration() {
+            const operation = operationSelect.value;
+            return maxValues[operation]?.duration || 100;
+        }
+
+        function getMaxIntensity() {
+            const operation = operationSelect.value;
+            return maxValues[operation]?.intensity || 100;
+        }
+
+        setSliderMaxValues();
     });
 </script>
 </body>
