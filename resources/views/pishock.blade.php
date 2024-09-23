@@ -13,42 +13,76 @@
     </style>
 </head>
 <body>
-<div class="container mt-5">
-    <h1>PiShock Controller</h1>
-    @if (session('response'))
-        <div class="alert alert-info">{{ session('response') }}</div>
-    @endif
-    <form id="pishock-form" method="POST" action="{{ route('pishock') }}">
-        @csrf
-        <div class="mb-3">
-            <a href="{{ route('devices.index') }}">Device management</a> <br>
-            <label for="deviceShareCodes">Devices:</label><br>
-            @foreach ($devices as $deviceCode => $deviceName)
-                <input type="checkbox" name="deviceShareCodes[]" id="device_{{ $deviceCode }}"
-                       value="{{ $deviceCode }}">
-                <label for="device_{{ $deviceCode }}">{{ $deviceName }}</label> <br>
-            @endforeach
-            <div id="device-error" class="text-danger" style="display: none;">Please select at least one device.</div>
+
+@if(!empty($devices))
+    @auth
+        @include('.layouts.navigationBar')
+    @else
+        <a href="{{ route('login') }}">Login</a>
+    @endauth
+
+    <div class="container mt-5">
+        <h1>PiShock Controller</h1>
+        @if (session('response'))
+            <div class="alert alert-info">{{ session('response') }}</div>
+        @endif
+        <form id="pishock-form" method="POST" action="{{ route('pishock') }}">
+            @csrf
+            <div class="mb-3">
+                <label for="deviceShareCodes">Devices:</label><br>
+                @foreach ($devices as $deviceCode => $deviceName)
+                    <input type="checkbox" name="deviceShareCodes[]" id="device_{{ $deviceCode }}"
+                           value="{{ $deviceCode }}">
+                    <label for="device_{{ $deviceCode }}">{{ $deviceName }}</label> <br>
+                @endforeach
+                <div id="device-error" class="text-danger" style="display: none;">Please select at least one device.
+                </div>
+            </div>
+            <div class="mb-3">
+                <label for="operation" class="form-label">Operation</label>
+                <select class="form-select" id="operation" name="operation" required>
+                    <option value="shock">Shock</option>
+                    <option value="vibrate">Vibrate</option>
+                    <option value="beep">Beep</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="duration" class="form-label">Duration (seconds): <span id="durationValue">1</span></label>
+                <input type="range" class="form-range right-stripe" id="duration" name="duration" min="1" max="100"
+                       value="1">
+                @auth
+                    <button type="button" class="btn btn-secondary btn-sm" id="editDurationMax">Edit Max Duration
+                    </button>
+                @endauth
+            </div>
+            <div class="mb-3" id="intensity-group">
+                <label for="intensity" class="form-label">Intensity: <span id="intensityValue">1</span></label>
+                <input type="range" class="form-range right-stripe" id="intensity" name="intensity" min="1" max="100"
+                       value="1">
+                @auth
+                    <button type="button" class="btn btn-secondary btn-sm" id="editIntensityMax">Edit Max Intensity
+                    </button>
+                @endauth
+            </div>
+            <button type="submit" class="btn btn-primary">Send Command</button>
+        </form>
+    </div>
+@else
+
+    @auth
+        <div class="container">
+            <div class="h1 align-content-center">No devices have been setup up, please go to the <a
+                    href="{{ route('devices.index') }}">device manager</a> to add devices.
+            </div>
         </div>
-        <div class="mb-3">
-            <label for="operation" class="form-label">Operation</label>
-            <select class="form-select" id="operation" name="operation" required>
-                <option value="shock">Shock</option>
-                <option value="vibrate">Vibrate</option>
-                <option value="beep">Beep</option>
-            </select>
+    @elseauth
+        <div class="container">
+            <div class="h1 align-content-center">Oops! The owner of this Pishock controller has no devices setup!</div>
         </div>
-        <div class="mb-3">
-            <label for="duration" class="form-label">Duration (seconds): <span id="durationValue">1</span></label>
-            <input type="range" class="form-range right-stripe" id="duration" name="duration" min="1" max="100" value="1">
-        </div>
-        <div class="mb-3" id="intensity-group">
-            <label for="intensity" class="form-label">Intensity: <span id="intensityValue">1</span></label>
-            <input type="range" class="form-range right-stripe" id="intensity" name="intensity" min="1" max="100" value="1">
-        </div>
-        <button type="submit" class="btn btn-primary">Send Command</button>
-    </form>
-</div>
+    @endauth
+
+
+@endif
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {
@@ -129,7 +163,7 @@
             localStorage.setItem('intensity', intensityInput.value);
         });
 
-        //
+        // Function to show/hide intensity group
         function toggleIntensityGroup() {
             if (operationSelect.value === 'shock' || operationSelect.value === 'vibrate') {
                 intensityGroup.style.display = 'block';
@@ -174,6 +208,25 @@
         }
 
         setSliderMaxValues();
+
+        @auth
+        // Event listeners for edit max buttons
+        document.getElementById('editDurationMax').addEventListener('click', () => {
+            const newMaxDuration = prompt('Enter new max duration:');
+            if (newMaxDuration !== null) {
+                maxValues[operationSelect.value].duration = parseInt(newMaxDuration, 10);
+                setSliderMaxValues();
+            }
+        });
+
+        document.getElementById('editIntensityMax').addEventListener('click', () => {
+            const newMaxIntensity = prompt('Enter new max intensity:');
+            if (newMaxIntensity !== null) {
+                maxValues[operationSelect.value].intensity = parseInt(newMaxIntensity, 10);
+                setSliderMaxValues();
+            }
+        });
+        @endauth
     });
 </script>
 </body>

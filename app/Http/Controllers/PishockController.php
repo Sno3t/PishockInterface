@@ -118,4 +118,5 @@ class PishockController extends Controller
         return view('deviceManager', ['devices' => Device::all()]);
     }
 
+    
 }

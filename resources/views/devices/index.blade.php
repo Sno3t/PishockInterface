@@ -1,10 +1,10 @@
 {{--@extends('layouts.app')--}}
-
 {{--@section('content')--}}
 <div class="container">
+    @include('.layouts.navigationBar')
     <h1>Manage shockers</h1>
 
-    <a href="{{ route('devices.create') }}" class="btn btn-primary mb-3">Add New Device</a>
+    <a href="{{ route('devices.create') }}" class="btn btn-primary mb-3">Add new device</a>
 
     @if (session('status'))
         <div class="alert alert-success">

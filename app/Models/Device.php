@@ -26,22 +26,6 @@ class Device extends Model
     private string $shareCode;
 
     /**
-     * @return string[]
-     */
-    public function getFillable(): array
-    {
-        return $this->fillable;
-    }
-
-    /**
-     * @param string[] $fillable
-     */
-    public function setFillable(array $fillable): void
-    {
-        $this->fillable = $fillable;
-    }
-
-    /**
      * @return string
      */
     public function getName(): string

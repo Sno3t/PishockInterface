@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::get('/dashboard', function () {
-    return view('dashboard');
+    return redirect('');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
@@ -22,5 +22,8 @@ Route::get('/pishock', [PishockController::class, 'index'])->name('pishock');
 Route::post('/pishock', [PishockController::class, 'sendCommand']);
 
 Route::resource('devices', DeviceController::class);
+
+Route::post('/updateMaxValues', [PiShockController::class, 'updateMaxValues'])->name('updateMaxValues');
+
 
 require __DIR__.'/auth.php';
