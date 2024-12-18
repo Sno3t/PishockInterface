@@ -20,7 +20,7 @@ class PishockController extends Controller
     protected string $baseUrl = 'https://do.pishock.com/api/apioperate';
     protected string $username;
     protected string $apiKey;
-    protected string $name= 'Pishock interface';
+    protected string $name = 'Pishock interface';
     private array $devices;
 
     public function __construct()
@@ -77,7 +77,7 @@ class PishockController extends Controller
 
             $operations = [];
 
-            foreach ($deviceShareCodes as $deviceCode){
+            foreach ($deviceShareCodes as $deviceCode) {
                 $params = [
                     'Username' => $this->username,
                     'Name' => $this->name,
@@ -97,7 +97,7 @@ class PishockController extends Controller
 
             $responses = [];
 
-            foreach ($operations as $operation){
+            foreach ($operations as $operation) {
                 $response[] = $client->post($this->baseUrl, [
                     'headers' => [
                         'Content-Type' => 'application/json',
@@ -113,10 +113,10 @@ class PishockController extends Controller
         return null;
     }
 
-    public function deviceManager(){
-
+    public function deviceManager(): view
+    {
         return view('deviceManager', ['devices' => Device::all()]);
     }
 
-    
+
 }
